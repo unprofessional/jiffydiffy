@@ -1,0 +1,47 @@
+/* ---------- Design tokens (easy to theme/tune later) ---------- */
+:root{
+  /* UI font */
+  --ui-font: Inter, Avenir, Helvetica, Arial, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --ui-font-size: 16px;
+
+  /* Monospace used by editors + diff */
+  --mono-font: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --mono-size: 13.5px;
+  --mono-line: 1.5; /* unitless multiplier */
+
+  /* Editor sizing: exactly N lines visible */
+  --editor-lines: 15;
+  --editor-row: calc(var(--mono-size) * var(--mono-line));  /* px per line */
+  /* +12px = 6px top + 6px bottom textarea padding */
+  --editor-h: calc(var(--editor-row) * var(--editor-lines) + 12px);
+
+  /* Colors */
+  --bg: #f6f6f6;
+  --fg: #0f0f0f;
+
+  --gutter-bg: #ececec;
+  --gutter-border: #ccc;
+  --gutter-fg: #333;
+
+  --eq-bg: #f6f8fa;   --eq-fg: #24292e;
+  --del-bg: #ffeef0;  --del-fg: #b31d28;
+  --ins-bg: #e6ffed;  --ins-fg: #1a7f37;
+
+  --token-del: rgba(179,29,40,0.25);
+  --token-ins: rgba(26,127,55,0.25);
+}
+
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#2f2f2f; --fg:#f6f6f6;
+
+    --gutter-bg:#161b22; --gutter-border:#30363d; --gutter-fg:#8b949e;
+
+    --eq-bg:#262b31; --eq-fg:#e6edf3;
+    --del-bg:#3a1e22; --del-fg:#ff7b72;
+    --ins-bg:#17361f; --ins-fg:#7ee787;
+
+    --token-del: rgba(248,81,73,0.35);
+    --token-ins: rgba(46,160,67,0.35);
+  }
+}

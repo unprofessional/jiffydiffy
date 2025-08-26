@@ -1,0 +1,49 @@
+/* ---------- Editors (share mono tokens) ---------- */
+.editor{
+  display:grid; grid-template-rows:auto 1fr; gap:6px;
+}
+.editor-header{
+  font-weight:700; letter-spacing:.02em; text-transform:uppercase;
+  font-size:12px; opacity:.8;
+}
+
+.editor-body{
+  display:grid; grid-template-columns:44px 1fr; gap:0;
+  border:1px solid #555; border-radius:6px; overflow:hidden; background:#fff;
+
+  /* Fixed window exactly N lines tall */
+  height: var(--editor-h);
+}
+
+/* Both columns fill the same fixed height and scroll */
+.ln-gutter{
+  background:#f0f0f0; color:#555;
+  font-family: var(--mono-font);
+  font-variant-numeric: tabular-nums;
+  padding:6px 8px 6px 6px;
+  height: 100%;
+  overflow: auto;
+}
+.ln{
+  height: var(--editor-row);
+  line-height: var(--editor-row); /* exact px line height avoids rounding drift */
+}
+.ln-textarea{
+  font-family: var(--mono-font);
+  font-size: var(--mono-size);
+  line-height: var(--editor-row); /* exact px line height */
+  padding:6px 8px;
+  border:none; outline:none;
+
+  height: 100%;
+  resize: none;      /* remove grab handle */
+  overflow: auto;    /* scroll instead */
+
+  background:#fff; color:#111;
+}
+
+@media (prefers-color-scheme: dark){
+  .editor-body{ border-color:#444; background:#151515; }
+  .ln-gutter{ background:#1e1e1e; color:#aaa; }
+  .ln-textarea{ background:#0f0f0f; color:#e6e6e6; }
+}

@@ -1,0 +1,65 @@
+/* ---------- Diff containers ---------- */
+.diff-wrap{
+  font-family: var(--mono-font);
+  border:1px solid #333;
+  border-radius:6px;
+  overflow:hidden;
+}
+.diff-header{
+  background:#222; color:#fff; padding:6px 10px; font-weight:600;
+}
+@media (prefers-color-scheme: dark){
+  .diff-header{ background:#1c1c1c; color:#fff; }
+}
+
+/* ---------- Two-pane layout (A | B) ---------- */
+.two-pane{ background:transparent; }
+
+/* rows & cells use the same mono style as editors */
+.row{
+  display:grid;
+  grid-template-columns: 56px 1fr 56px 1fr; /* A-gutter | A-text | B-gutter | B-text */
+  gap:0;
+  font-family: var(--mono-font);
+  font-size: var(--mono-size);
+  line-height: var(--mono-line);
+  white-space: pre-wrap;
+  align-items: stretch;
+}
+.row + .row{ border-top:1px solid rgba(128,128,128,.25); }
+
+/* gutters (line numbers) */
+.gA,.gB{
+  display:flex; align-items:center; justify-content:flex-end;
+  font-variant-numeric: tabular-nums;
+  padding:0 8px; min-width:48px;
+  background: var(--gutter-bg);
+  border-right:1px solid var(--gutter-border);
+  color: var(--gutter-fg);
+  font-size: calc(var(--mono-size) * .95);
+}
+
+/* cells */
+.cell{ display:block; padding:4px 8px; }
+
+/* equal */
+.equal .cellA,.equal .cellB{ background: var(--eq-bg); color: var(--eq-fg); }
+
+/* delete */
+.delete .cellA{ background: var(--del-bg); color: var(--del-fg); }
+.delete .cellB{ background: transparent; }
+
+/* insert */
+.insert .cellB{ background: var(--ins-bg); color: var(--ins-fg); }
+.insert .cellA{ background: transparent; }
+
+/* replace pair */
+.replace .cellA{ background: var(--del-bg); color: var(--del-fg); }
+.replace .cellB{ background: var(--ins-bg); color: var(--ins-fg); }
+
+/* word-level tokens */
+.token-del{ background: var(--token-del); border-radius:2px; }
+.token-ins{ background: var(--token-ins); border-radius:2px; }
+
+/* subtle vertical divider between panes */
+.row > :nth-child(3){ border-left:1px solid rgba(128,128,128,.25); }
