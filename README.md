@@ -32,11 +32,11 @@ The diffing is a two-stage process:
 ```mermaid
 flowchart TD
     A[Original text] --- B[New text]
-    A --> C[engine.rs<br/>(line-level)]
+    A --> C["engine.rs (line-level)"]
     B --> C
-    C -->|Finds "hunks"| D[word-diff.ts<br/>(word/char-level)]
-    D --> E[UI Renderer (React/Tauri)]
-    E --> F[Side-by-side diff<br/>line numbers + inline highlights]
+    C -->|Finds hunks| D["word-diff.ts (word/char-level)"]
+    D --> E["UI Renderer (React/Tauri)"]
+    E --> F["Side-by-side diff with line numbers + inline highlights"]
 ```
 
 ### ASCII (fallback)
