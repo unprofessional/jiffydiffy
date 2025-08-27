@@ -1,45 +1,94 @@
 /* ---------- Editors (share mono tokens) ---------- */
 .editor{
-  display:grid; grid-template-rows:auto 1fr; gap:6px;
+  display:grid;
+  grid-template-rows:auto 1fr;
+  gap:6px;
 }
 .editor-header{
-  font-weight:700; letter-spacing:.02em; text-transform:uppercase;
-  font-size:12px; opacity:.8;
+  font-weight:700;
+  letter-spacing:.02em;
+  text-transform:uppercase;
+  font-size:12px;
+  opacity:.8;
+}
+
+/* Use integer pixel row height to avoid selection gaps. */
+:root{
+  --editor-row: 20px;         /* pick an integer; adjust to taste */
 }
 
 .editor-body{
-  display:grid; grid-template-columns:44px 1fr; gap:0;
-  border:1px solid #555; border-radius:6px; overflow:hidden; background:#fff;
-
-  /* Fixed window exactly N lines tall */
+  display:grid;
+  grid-template-columns:44px 1fr;
+  gap:0;
+  border:1px solid #555;
+  border-radius:6px;
+  overflow:hidden;
+  background:#fff;
   height: var(--editor-h);
 }
 
-/* Both columns fill the same fixed height and scroll */
+/* text column wrapper (prevents min-content shrinking & hosts the ruler) */
+.ln-wrap{
+  position:relative;
+  height:100%;
+  min-width:0;
+}
+
+/* --------- Gutter --------- */
 .ln-gutter{
-  background:#f0f0f0; color:#555;
+  background:#f0f0f0;
+  color:#555;
   font-family: var(--mono-font);
   font-variant-numeric: tabular-nums;
   padding:6px 8px 6px 6px;
-  height: 100%;
-  overflow: auto;
+  height:100%;
+  overflow:hidden;        /* no own scrollbar */
 }
 .ln{
   height: var(--editor-row);
-  line-height: var(--editor-row); /* exact px line height avoids rounding drift */
+  line-height: var(--editor-row);
 }
+
+/* --------- Textarea --------- */
 .ln-textarea{
+  box-sizing:border-box;
+  width:100%;
+  height:100%;
+  resize:none;
+  overflow:auto;
+  scrollbar-gutter: stable;
+
   font-family: var(--mono-font);
   font-size: var(--mono-size);
-  line-height: var(--editor-row); /* exact px line height */
-  padding:6px 8px;
-  border:none; outline:none;
+  line-height: var(--editor-row);   /* integer px */
+  padding:6px 8px;                  /* must match ruler */
+  border:none;
+  outline:none;
 
-  height: 100%;
-  resize: none;      /* remove grab handle */
-  overflow: auto;    /* scroll instead */
+  background:#fff;
+  color:#111;
 
-  background:#fff; color:#111;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* --------- Hidden ruler (mirror) --------- */
+.ln-ruler{
+  position:absolute;
+  inset:0;
+  box-sizing:border-box;
+  padding:6px 8px;                  /* must match textarea padding */
+  overflow:auto;                    /* same scroll box as textarea */
+  scrollbar-gutter: stable;
+  visibility:hidden;
+  pointer-events:none;
+
+  font-family: var(--mono-font);
+  font-size: var(--mono-size);
+  line-height: var(--editor-row);   /* integer px */
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 @media (prefers-color-scheme: dark){
