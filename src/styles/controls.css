@@ -1,0 +1,68 @@
+/* src/styles/controls.css */
+
+/* spans both grid columns under the editors */
+.controls-row-wrap {
+  grid-column: 1 / -1;        /* <-- key: full width across the grid */
+  display: flex;
+  justify-content: center;     /* center the inner controls block */
+}
+
+/* existing rules (kept) */
+.controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0 8px;
+}
+
+.controls-row {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+/* shared button styles */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform 120ms ease, filter 120ms ease, opacity 120ms ease;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* primary (Run Diff) */
+.btn-primary {
+  background: #16a34a;   /* green */
+  color: #fff;
+}
+.btn-primary:hover:not(:disabled) {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+/* secondary (Reset) */
+.btn-secondary {
+  background: #3f3f46;   /* slate */
+  color: #fff;
+}
+.btn-secondary:hover:not(:disabled) {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+/* error text under controls */
+.error-text {
+  color: #f87171; /* red-400 */
+  font-size: 0.95rem;
+  text-align: center;
+}

@@ -1,0 +1,43 @@
+/* compact app header with diff stats */
+.topbar {
+  grid-column: 1 / -1;           /* full width in the app grid */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 4px 4px;
+}
+
+.brand .brand-mark {
+  font-weight: 700;
+  font-size: 16px;               /* compact */
+  letter-spacing: 0.3px;
+  opacity: 0.9;
+}
+
+.stats {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 24px;
+  padding: 0 8px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 1;
+  color: #fff;
+}
+
+.badge-add { background: #16a34a; }   /* green */
+.badge-del { background: #dc2626; }   /* red */
+.badge-eq  { background: #475569; }   /* slate */
+.badge-pct { background: #2563eb; }   /* blue */
+
+.divider { opacity: 0.4; }
