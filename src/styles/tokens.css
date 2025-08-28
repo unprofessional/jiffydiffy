@@ -11,31 +11,72 @@
 
   /* Editor sizing: exactly N lines visible */
   --editor-lines: 15;
-  --editor-row: calc(var(--mono-size) * var(--mono-line));  /* px per line */
-  /* +12px = 6px top + 6px bottom textarea padding */
-  --editor-h: calc(var(--editor-row) * var(--editor-lines) + 12px);
+  --editor-row: calc(var(--mono-size) * var(--mono-line)); /* px per line */
+  /* Padding used by textarea/ruler (must match in editor.css) */
+  --editor-pad-x: 8px;
+  --editor-pad-y: 6px;
+  --editor-h: calc(var(--editor-row) * var(--editor-lines) + (var(--editor-pad-y) * 2));
 
-  /* Colors */
+  /* App colors */
   --bg: #f6f6f6;
   --fg: #0f0f0f;
 
+  /* Panels / borders */
+  --panel-bg: #ffffff;
+  --panel-border: #555;
+  --panel-border-muted: #4444;
+
+  /* Editor */
+  --editor-bg: #ffffff;
+  --editor-fg: #111111;
+
+  /* Gutter (line numbers) */
   --gutter-bg: #ececec;
   --gutter-border: #ccc;
   --gutter-fg: #333;
 
+  /* Diff colors */
   --eq-bg: #f6f8fa;   --eq-fg: #24292e;
   --del-bg: #ffeef0;  --del-fg: #b31d28;
   --ins-bg: #e6ffed;  --ins-fg: #1a7f37;
 
+  /* Word token backgrounds */
   --token-del: rgba(179,29,40,0.25);
   --token-ins: rgba(26,127,55,0.25);
+
+  /* Ghost highlight over editor */
+  --ghost-bg: #ffd54a30;
+  --ghost-border: #ffcc00a0;
+
+  /* Buttons */
+  --btn-primary-bg: #16a34a; /* green */
+  --btn-primary-fg: #ffffff;
+  --btn-secondary-bg: #3f3f46; /* slate */
+  --btn-secondary-fg: #ffffff;
+
+  /* Topbar */
+  --switch-bg: #f5f6f8;
+  --switch-active-bg: #2d7ef71a;
+  --switch-active-fg: #0b65f0;
+
+  /* Hunk card */
+  --hunk-bg: #ffffff;
+  --hunk-header-bg: #f7f7f7;
+  --hunk-body-bg: #fafafa;
 }
 
 @media (prefers-color-scheme: dark){
   :root{
     --bg:#2f2f2f; --fg:#f6f6f6;
 
-    --gutter-bg:#161b22; --gutter-border:#30363d; --gutter-fg:#8b949e;
+    --panel-bg:#151515;
+    --panel-border:#444;
+    --panel-border-muted:#333;
+
+    --editor-bg:#0f0f0f;
+    --editor-fg:#e6e6e6;
+
+    --gutter-bg:#1e1e1e; --gutter-border:#30363d; --gutter-fg:#8b949e;
 
     --eq-bg:#262b31; --eq-fg:#e6edf3;
     --del-bg:#3a1e22; --del-fg:#ff7b72;
@@ -43,5 +84,13 @@
 
     --token-del: rgba(248,81,73,0.35);
     --token-ins: rgba(46,160,67,0.35);
+
+    --switch-bg:#151515;
+    --switch-active-bg:#13407433;
+    --switch-active-fg:#7db4ff;
+
+    --hunk-bg:#0f0f0f;
+    --hunk-header-bg:#151515;
+    --hunk-body-bg:#111111;
   }
 }
