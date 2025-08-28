@@ -1,3 +1,12 @@
+html, body, #root {
+  height: 100%;
+  margin: 0;          /* remove UA default margin */
+}
+
+body {
+  overflow: hidden;   /* prevent outer page scrollbars */
+}
+
 /* ---------- Base ---------- */
 *,
 *::before,
@@ -37,10 +46,12 @@ input,button{ outline:none; }
 
 /* ---------- App layout ---------- */
 .app-grid{
-  padding:16px;
-  display:grid;
+  padding: 16px;
+  display: grid;
   grid-template-columns: 1fr 1fr;
-  gap:12px;
+  gap: 12px;
+  min-width: 0;
+  min-height: 0;  /* important when nested in grid */
 }
 .app-title{ grid-column:1 / -1; }
 .controls-row{
