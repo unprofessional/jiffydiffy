@@ -21,7 +21,7 @@
   border: 1px solid #5555;
   border-radius: 999px;
   overflow: hidden;
-  background: #f5f6f8;
+  background: var(--switch-bg);
 }
 .view-switch .seg {
   appearance: none;
@@ -34,13 +34,9 @@
   opacity: 0.8;
 }
 .view-switch .seg.active {
-  background: #2d7ef71a;
-  color: #0b65f0;
+  background: var(--switch-active-bg);
+  color: var(--switch-active-fg);
   opacity: 1;
-}
-@media (prefers-color-scheme: dark){
-  .view-switch{ background:#151515; border-color:#333; }
-  .view-switch .seg.active{ background:#13407433; color:#7db4ff; }
 }
 
 .stats {

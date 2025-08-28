@@ -32,7 +32,7 @@
 .gA,.gB{
   display:flex; align-items:center; justify-content:flex-end;
   font-variant-numeric: tabular-nums;
-  padding:0 8px; min-width:48px;
+  padding:0 var(--editor-pad-x); min-width:48px;
   background: var(--gutter-bg);
   border-right:1px solid var(--gutter-border);
   color: var(--gutter-fg);
@@ -40,7 +40,7 @@
 }
 
 /* cells */
-.cell{ display:block; padding:4px 8px; }
+.cell{ display:block; padding:4px var(--editor-pad-x); }
 
 /* equal */
 .equal .cellA,.equal .cellB{ background: var(--eq-bg); color: var(--eq-fg); }
@@ -63,3 +63,41 @@
 
 /* subtle vertical divider between panes */
 .row > :nth-child(3){ border-left:1px solid rgba(128,128,128,.25); }
+
+/* ---------- Diff view basics (moved from editor.css) ---------- */
+.diff-view{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.hunk{
+  border:1px solid var(--panel-border-muted);
+  border-radius:6px;
+  overflow:hidden;
+  background:var(--hunk-bg);
+}
+.hunk.active{
+  box-shadow: 0 0 0 2px #2d7ef733 inset;
+}
+.hunk-header{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:6px 8px;
+  background:var(--hunk-header-bg);
+}
+.hunk-title{
+  flex:1;
+  font-weight:600;
+  cursor:pointer;
+}
+.hunk-body{
+  max-height: 360px;
+  overflow:auto;
+  background:var(--hunk-body-bg);
+  padding:6px 8px;
+}
+.hline{ margin:0; white-space:pre-wrap; }
+.hline.op-insert{ background: var(--ins-bg); }
+.hline.op-delete{ background: var(--del-bg); }
+.hline.op-equal { background:transparent; }

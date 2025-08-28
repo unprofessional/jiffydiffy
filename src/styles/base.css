@@ -54,8 +54,8 @@ input,button{ outline:none; }
   min-height: 0;  /* important when nested in grid */
 }
 .app-title{ grid-column:1 / -1; }
-.controls-row{
-  grid-column:1 / -1; display:flex; gap:8px; align-items:center;
-}
-.error-text{ color:tomato; }
+.controls-row{ grid-column:1 / -1; display:flex; gap:8px; align-items:center; }
 .diff-container{ grid-column:1 / -1; }
+
+/* Shared feedback text */
+.error-text{ color:#f87171; font-size:0.95rem; text-align:center; }
