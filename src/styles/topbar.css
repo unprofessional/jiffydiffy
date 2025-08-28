@@ -1,18 +1,46 @@
 /* compact app header with diff stats */
 .topbar {
-  grid-column: 1 / -1;           /* full width in the app grid */
-  display: flex;
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1fr auto auto;
   align-items: center;
-  justify-content: space-between;
   gap: 12px;
   padding: 8px 4px 4px;
 }
 
 .brand .brand-mark {
   font-weight: 700;
-  font-size: 16px;               /* compact */
+  font-size: 16px;
   letter-spacing: 0.3px;
   opacity: 0.9;
+}
+
+.view-switch {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #5555;
+  border-radius: 999px;
+  overflow: hidden;
+  background: #f5f6f8;
+}
+.view-switch .seg {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  padding: 4px 10px;
+  font-weight: 600;
+  font-size: 12px;
+  cursor: pointer;
+  opacity: 0.8;
+}
+.view-switch .seg.active {
+  background: #2d7ef71a;
+  color: #0b65f0;
+  opacity: 1;
+}
+@media (prefers-color-scheme: dark){
+  .view-switch{ background:#151515; border-color:#333; }
+  .view-switch .seg.active{ background:#13407433; color:#7db4ff; }
 }
 
 .stats {
