@@ -30,7 +30,6 @@ export const Editor = forwardRef(function Editor(
     onPrevChange,
     onNextChange,
     // cross-pane coordination
-    onScrollLines, // reports top line while scrolling
     ghostRanges = [],
   }: {
     label: string;
