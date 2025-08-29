@@ -10,7 +10,7 @@
   --mono-line: 1.5; /* unitless multiplier */
 
   /* Editor sizing: exactly N lines visible */
-  --editor-lines: 15;
+  --editor-lines: 20;
   --editor-row: calc(var(--mono-size) * var(--mono-line)); /* px per line */
   /* Padding used by textarea/ruler (must match in editor.css) */
   --editor-pad-x: 8px;

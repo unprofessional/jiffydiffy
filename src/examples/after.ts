@@ -1,5 +1,5 @@
 // text-utils.ts — modular, DRY helpers with small internal units
-// Public API is stable: slugify, truncate, formatCount, debounce
+// (AFTER) Public API is stable: slugify, truncate, formatCount, debounce
 
 // ---------- Constants ----------
 const DEFAULT_MAX = 120;
@@ -301,14 +301,3 @@ function chain(s: string, ...fns: Array<(s: string) => string>): string {
   for (const fn of fns) out = fn(out);
   return out;
 }
-
-// ---------- Tiny self-test (dev only) ----------
-/* istanbul ignore next */
-// function selfTest() {
-//   console.assert(slugify("Hello, 世界!") === "hello-世界", "slugify unicode failed");
-//   console.assert(truncate("abcdef", { max: 3 }) === "…", "truncate tiny max");
-//   console.assert(formatCount(2, "person") === "2 people", "irregular plural");
-// }
-// if (process.env.NODE_ENV !== "production") {
-//   try { selfTest(); } catch { /* noop */ }
-// }

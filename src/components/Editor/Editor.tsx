@@ -1,3 +1,4 @@
+// src/components/Editor/Editor.tsx
 import type { CSSProperties } from "react";
 import {
   forwardRef,

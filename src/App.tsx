@@ -1,3 +1,4 @@
+// src/App.tsx
 import "./App.css";
 import { TopBar } from "./components/TopBar";
 import { Editor } from "./components/Editor/Editor";
