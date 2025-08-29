@@ -78,7 +78,6 @@ export function DiffView({
         );
         aLn++;
       } else {
-        // insert
         rows.push(
           <div key={`h${hi}-i${i}`} className="row insert">
             <span className="gA"></span>
@@ -94,7 +93,6 @@ export function DiffView({
     const isCollapsed = !!collapsed[hi];
     const isActive = currentIndex === hi;
 
-    // precompute hover ranges for ghost-highlighting in editors
     const aRange =
       h.a_lines > 0
         ? { from: h.a_start - 1, to: h.a_start - 1 + (h.a_lines - 1) }
@@ -155,5 +153,6 @@ export function DiffView({
     );
   });
 
-  return <>{rendered}</>;
+  // NEW: wrap in diff-pane + mono so code scale applies everywhere inside
+  return <div className="diff-pane mono">{rendered}</div>;
 }

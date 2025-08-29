@@ -1,13 +1,24 @@
 /* compact app header with diff stats */
 .topbar {
   grid-column: 1 / -1;
+  /* stick within .app-main (the scroll container) */
+  position: sticky;
+  top: 0;
+  z-index: 20;
+
+  /* Full-bleed background inside .app-grid (which has 16px padding) */
+  margin: 0 -16px;
+  padding: 8px 16px 10px;
+  background: #0b0e12;                 /* match app shell bg */
+  border-bottom: 1px solid var(--gutter-border);
+
   display: grid;
-  grid-template-columns: 1fr auto auto;
+  grid-template-columns: 1fr auto auto auto; /* extra 'auto' for font-switch */
   align-items: center;
   gap: 12px;
-  padding: 8px 4px 4px;
 }
 
+/* brand */
 .brand .brand-mark {
   font-weight: 700;
   font-size: 16px;
@@ -15,30 +26,42 @@
   opacity: 0.9;
 }
 
-.view-switch {
+/* segmented controls (view + font) */
+.view-switch,
+.font-switch {
   display: inline-flex;
   align-items: center;
-  border: 1px solid #5555;
-  border-radius: 999px;
+  border: 1px solid var(--border, #5555);
+  border-radius: 999px;          /* keep your pill look */
   overflow: hidden;
-  background: var(--switch-bg);
+  background: var(--switch-bg, transparent);
 }
-.view-switch .seg {
+
+.seg {
   appearance: none;
   border: 0;
   background: transparent;
-  padding: 4px 10px;
+  padding: 6px 10px;             /* slightly larger than 4px for better hit area */
+  font: inherit;
   font-weight: 600;
   font-size: 12px;
   cursor: pointer;
-  opacity: 0.8;
+  opacity: 0.9;
 }
-.view-switch .seg.active {
-  background: var(--switch-active-bg);
-  color: var(--switch-active-fg);
+
+.view-switch .seg + .seg,
+.font-switch  .seg + .seg {
+  border-left: 1px solid var(--border, #5555);
+}
+
+.view-switch .seg.active,
+.font-switch  .seg.active {
+  background: var(--switch-active-bg, var(--seg-active, #1f1f1f));
+  color: var(--switch-active-fg, inherit);
   opacity: 1;
 }
 
+/* stats badges */
 .stats {
   display: inline-flex;
   align-items: center;

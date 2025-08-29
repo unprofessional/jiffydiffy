@@ -1,5 +1,5 @@
 import { useMemo, useRef } from "react";
-import type { EditorApi } from "../../components/Editor";
+import type { EditorApi } from "../../components/Editor/Editor";
 
 export function useScrollSync(
   opts: {

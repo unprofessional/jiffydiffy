@@ -49,13 +49,19 @@ input,button{ outline:none; }
   padding: 16px;
   display: grid;
   grid-template-columns: 1fr 1fr;
+  /* rows: topbar, editors row, controls, diff (fills remaining) */
+  grid-template-rows: auto auto auto 1fr;
   gap: 12px;
   min-width: 0;
-  min-height: 0;  /* important when nested in grid */
+  min-height: 0;            /* important when nested in grid */
+  align-content: start;     /* avoid stretching rows oddly */
 }
 .app-title{ grid-column:1 / -1; }
 .controls-row{ grid-column:1 / -1; display:flex; gap:8px; align-items:center; }
-.diff-container{ grid-column:1 / -1; }
+.diff-container{
+  grid-column:1 / -1;
+  min-height: 0;            /* lets it shrink within the 1fr row */
+}
 
 /* Shared feedback text */
 .error-text{ color:#f87171; font-size:0.95rem; text-align:center; }
