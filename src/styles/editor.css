@@ -1,3 +1,4 @@
+/* src/styles/editor.css */
 /* ---------- Editors (share mono tokens) ---------- */
 /* Bridge global scale → local editor vars */
 .editor {
@@ -58,6 +59,8 @@
 
 /* --------- Textarea --------- */
 .ln-textarea{
+  position: relative;
+  z-index: 1;                 /* on top of ruler */
   box-sizing:border-box;
   width:100%;
   height:100%;
@@ -67,34 +70,51 @@
 
   font-family: var(--mono-font, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace);
   font-size: var(--mono-size);
-  line-height: var(--editor-row);   /* integer px */
+  line-height: var(--editor-row);
   padding: var(--editor-pad-y) var(--editor-pad-x);
   border:none;
   outline:none;
 
-  background: var(--editor-bg);
-  color: var(--editor-fg);
+  /* CHANGED: let highlight show through + keep caret visible */
+  background: transparent;
+  color: transparent;
+  caret-color: var(--editor-fg);
 
   white-space: pre-wrap;
   word-break: break-word;
+  tab-size: 2;
 }
 
-/* --------- Hidden ruler (mirror) --------- */
+/* --------- Highlight ruler (mirror) --------- */
 .ln-ruler{
   position:absolute;
   inset:0;
+  z-index: 0;                 /* behind textarea */
   box-sizing:border-box;
   padding: var(--editor-pad-y) var(--editor-pad-x);
-  overflow:auto;                    /* same scroll box as textarea */
+  overflow:auto;              /* stays scroll-synced */
   scrollbar-gutter: stable;
-  visibility:hidden;
-  pointer-events:none;
+  pointer-events:none;        /* clicks go to textarea */
+  visibility: visible;        /* CHANGED: was hidden */
 
   font-family: var(--mono-font, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace);
   font-size: var(--mono-size);
-  line-height: var(--editor-row);   /* integer px */
+  line-height: var(--editor-row);
+
+  /* IMPORTANT: match wrapping with textarea so lines align */
   white-space: pre-wrap;
   word-break: break-word;
+  tab-size: 2;
+}
+
+/* Each visual line of highlight */
+.rline {
+  white-space: pre-wrap;      /* match textarea/ruler */
+  word-break: break-word;
+}
+
+.ln-textarea::selection {
+  background: #2d7ef733;
 }
 
 /* header actions */
