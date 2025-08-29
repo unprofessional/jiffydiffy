@@ -1,6 +1,6 @@
 import "./App.css";
 import { TopBar } from "./components/TopBar";
-import { Editor } from "./components/Editor";
+import { Editor } from "./components/Editor/Editor";
 import { DiffView } from "./components/DiffView";
 import { AppShell } from "./components/Layout/AppShell";
 import { Controls } from "./components/Controls";

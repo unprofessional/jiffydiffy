@@ -12,7 +12,7 @@ type Props = {
 };
 
 export const Sidebar: React.FC<Props> = ({ onOpenDiff }) => {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const { items, clear } = useRecentDiffs();
 
   const history = useMemo(() => items, [items]);

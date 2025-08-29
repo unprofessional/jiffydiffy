@@ -1,6 +1,8 @@
+// src/components/TopBar.tsx
 import { useMemo, useState } from "react";
 import type { DiffResult } from "../types/diff";
 import { wordDiff } from "../utils/word-diff";
+import { useFontScale, type FontSize } from "../state/font-scale";
 
 type Stats = {
   added: number;
@@ -102,6 +104,7 @@ export function TopBar({
   onModeChange?: (m: ViewMode) => void;
 }) {
   const [mode, setMode] = useState<ViewMode>(initialMode);
+  const { size, setSize } = useFontScale(); // ← global S/M/L font scale
 
   const stats = useMemo(
     () => (mode === "coder" ? computeCoderStats(diff) : computeWriterStats(diff)),
@@ -118,6 +121,8 @@ export function TopBar({
     setMode(m);
     onModeChange?.(m);
   };
+
+  const setFont = (s: FontSize) => setSize(s);
 
   return (
     <div className="topbar">
@@ -152,6 +157,34 @@ export function TopBar({
         <span className="badge badge-eq"  title={labelEq}>{unchanged}</span>
         <span className="divider" aria-hidden>•</span>
         <span className="badge badge-pct" title="Similarity">{similarityPct}%</span>
+      </div>
+
+      {/* S / M / L font size */}
+      <div className="font-switch" role="group" aria-label="Font size">
+        <button
+          className={`seg ${size === "S" ? "active" : ""}`}
+          onClick={() => setFont("S")}
+          title="Small (Ctrl/Cmd + - to decrease)"
+          aria-pressed={size === "S"}
+        >
+          S
+        </button>
+        <button
+          className={`seg ${size === "M" ? "active" : ""}`}
+          onClick={() => setFont("M")}
+          title="Medium (Ctrl/Cmd + 0 to reset)"
+          aria-pressed={size === "M"}
+        >
+          M
+        </button>
+        <button
+          className={`seg ${size === "L" ? "active" : ""}`}
+          onClick={() => setFont("L")}
+          title="Large (Ctrl/Cmd + = to increase)"
+          aria-pressed={size === "L"}
+        >
+          L
+        </button>
       </div>
     </div>
   );

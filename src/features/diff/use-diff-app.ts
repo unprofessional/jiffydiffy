@@ -1,12 +1,17 @@
 import { useMemo, useRef, useState } from "react";
 import type { DiffResult } from "../../types/diff";
 import { invokeDiff } from "../../services/diff.service";
-import type { EditorApi } from "../../components/Editor";
+import type { EditorApi } from "../../components/Editor/Editor";
 import { useRecentDiffs } from "../../state/recent-diffs";
 import { buildLineMapAtoB, invertMap } from "./line-map";
 
-const INITIAL_LEFT = "hello\nworld\n123\nhello\nworld\n123";
-const INITIAL_RIGHT = "hello\nthere\nworld\nsdsadfasdsd\nhello\nworld\n123";
+// Pull example sources as raw text
+// If TS complains, add: src/types/raw-import.d.ts -> `declare module '*?raw' { const s: string; export default s }`
+import EX_BEFORE from "../../examples/before.ts?raw";
+import EX_AFTER from "../../examples/after.ts?raw";
+
+const INITIAL_LEFT = EX_BEFORE;
+const INITIAL_RIGHT = EX_AFTER;
 
 export function useDiffApp() {
   const [left, setLeft] = useState(INITIAL_LEFT);
@@ -38,7 +43,12 @@ export function useDiffApp() {
       const res = await invokeDiff(left, right, { context_lines: 2 });
       setDiff(res);
       setCurrentHunk(0);
-      add({ result: res, aText: left, bText: right, meta: { aLabel: "Original", bLabel: "New" } });
+      add({
+        result: res,
+        aText: left,
+        bText: right,
+        meta: { aLabel: "Before", bLabel: "After" }, // updated labels
+      });
     } catch (e: any) {
       setError(String(e?.message ?? e));
       setDiff(null);
