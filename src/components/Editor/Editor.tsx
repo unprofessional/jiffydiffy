@@ -3,7 +3,8 @@ import {
   forwardRef,
   useImperativeHandle,
   useMemo,
-  useRef
+  useRef,
+  useEffect,
 } from "react";
 import { EditorHeader } from "./EditorHeader";
 import { LineNumbersGutter } from "./LineNumbersGutter";
@@ -33,6 +34,7 @@ export const Editor = forwardRef(function Editor(
     onPrevChange,
     onNextChange,
     // cross-pane coordination
+    onScrollLines,
     ghostRanges = [],
   }: {
     label: string;
@@ -72,6 +74,39 @@ export const Editor = forwardRef(function Editor(
 
   // ---- Scroll sync (textarea ↔ gutter ↔ ruler ↔ ghost overlay)
   useSyncScroll({ taRef, gutRef, rulerRef, ghostRef });
+
+    // ---- Notify parent for cross-pane scroll linking
+  useEffect(() => {
+    if (!onScrollLines) return;
+    const ta = taRef.current;
+    if (!ta) return;
+
+    const computeTopLine = () => {
+      if (!offsets.length) return 0;
+      const y = ta.scrollTop;
+      let lo = 0, hi = offsets.length - 1;
+      while (lo < hi) {
+        const mid = (lo + hi) >>> 1;
+        if (offsets[mid] <= y) lo = mid + 1;
+        else hi = mid;
+      }
+      const idx = lo - 1;
+      return Math.max(0, Math.min(logicalLines.length - 1, idx));
+    };
+
+    const handler = () => {
+      onScrollLines({
+        topLine: computeTopLine(),
+        scrollTop: ta.scrollTop,
+        clientHeight: ta.clientHeight,
+        totalLines: logicalLines.length,
+      });
+    };
+
+    handler(); // fire once to initialize partner pane
+    ta.addEventListener("scroll", handler, { passive: true });
+    return () => ta.removeEventListener("scroll", handler);
+  }, [onScrollLines, taRef, logicalLines.length, offsets]);
 
   // ---- Helpers
   const clampLine = (i: number) =>
