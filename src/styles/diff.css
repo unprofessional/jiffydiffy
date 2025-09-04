@@ -1,4 +1,29 @@
 /* ---------- Diff containers ---------- */
+
+/* Inherit font scale from AppShell -> apply to DiffView */
+.diff-pane{
+  /* match Editor’s math */
+  --mono-size: var(--code-font, 13px);
+  --mono-line: calc(var(--code-line-height, 1.55) * var(--code-font, 13px));
+
+  /* if these are used below, ensure they exist */
+  --editor-pad-x: var(--editor-pad-x, 10px);
+  --gutter-bg: var(--gutter-bg, #0f0f0f);
+  --gutter-border: var(--gutter-border, #0000);
+  --gutter-fg: var(--gutter-fg, #999);
+}
+
+/* Optional: set base mono font & size once for all rows */
+.diff-pane,
+.diff-pane .row,
+.diff-pane .cell,
+.diff-pane .gA,
+.diff-pane .gB{
+  font-family: var(--mono-font, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace);
+  font-size: var(--mono-size);
+  line-height: var(--mono-line);
+}
+
 .diff-wrap{
   font-family: var(--mono-font);
   border:1px solid #333;
