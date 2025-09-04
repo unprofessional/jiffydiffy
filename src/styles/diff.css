@@ -2,18 +2,18 @@
 
 /* Inherit font scale from AppShell -> apply to DiffView */
 .diff-pane{
-  /* match Editor’s math */
+  /* match Editor’s math (driven by FontScaleProvider) */
   --mono-size: var(--code-font, 13px);
-  --mono-line: calc(var(--code-line-height, 1.55) * var(--code-font, 13px));
+  --mono-line: var(--editor-row); /* bridged in editor.css */
 
-  /* if these are used below, ensure they exist */
+  /* ensure these exist */
   --editor-pad-x: var(--editor-pad-x, 10px);
   --gutter-bg: var(--gutter-bg, #0f0f0f);
   --gutter-border: var(--gutter-border, #0000);
   --gutter-fg: var(--gutter-fg, #999);
 }
 
-/* Optional: set base mono font & size once for all rows */
+/* set base mono metrics everywhere under diff */
 .diff-pane,
 .diff-pane .row,
 .diff-pane .cell,
@@ -82,14 +82,26 @@
 .replace .cellA{ background: var(--del-bg); color: var(--del-fg); }
 .replace .cellB{ background: var(--ins-bg); color: var(--ins-fg); }
 
-/* word-level tokens */
-.token-del{ background: var(--token-del); border-radius:2px; }
-.token-ins{ background: var(--token-ins); border-radius:2px; }
+/* ---------- word-level tokens ---------- */
+/* Inherit exact metrics from the row/cell so wrapping matches */
+.tokens,
+.token-del,
+.token-ins {
+  font: inherit;
+  line-height: inherit;
+  white-space: inherit;
+  word-break: inherit;
+  tab-size: inherit;
+}
+
+/* tint & slight padding */
+.token-del{ background: var(--token-del); border-radius:2px; padding:0 1px; }
+.token-ins{ background: var(--token-ins); border-radius:2px; padding:0 1px; }
 
 /* subtle vertical divider between panes */
 .row > :nth-child(3){ border-left:1px solid rgba(128,128,128,.25); }
 
-/* ---------- Diff view basics (moved from editor.css) ---------- */
+/* ---------- Diff view basics ---------- */
 .diff-view{
   display:flex;
   flex-direction:column;

@@ -1,9 +1,9 @@
-/* src/styles/editor.css */
 /* ---------- Editors (share mono tokens) ---------- */
 /* Bridge global scale → local editor vars */
 .editor {
   --mono-size: var(--code-font, 13px);
   --editor-row: calc(var(--code-font, 13px) * var(--code-line-height, 1.55));
+  --mono-line: var(--editor-row); /* bridge name */
 
   display: grid;
   grid-template-rows: auto 1fr;
@@ -50,7 +50,7 @@
   font-variant-numeric: tabular-nums;
   padding:var(--editor-pad-y) var(--editor-pad-x) var(--editor-pad-y) calc(var(--editor-pad-x) - 2px);
   height:100%;
-  overflow:hidden;        /* no own scrollbar */
+  overflow:hidden;
 }
 .ln{
   height: var(--editor-row);
@@ -75,7 +75,7 @@
   border:none;
   outline:none;
 
-  /* CHANGED: let highlight show through + keep caret visible */
+  /* Let highlight layer show through + keep caret visible */
   background: transparent;
   color: transparent;
   caret-color: var(--editor-fg);
@@ -95,21 +95,21 @@
   overflow:auto;              /* stays scroll-synced */
   scrollbar-gutter: stable;
   pointer-events:none;        /* clicks go to textarea */
-  visibility: visible;        /* CHANGED: was hidden */
+  visibility: visible;
 
   font-family: var(--mono-font, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace);
   font-size: var(--mono-size);
   line-height: var(--editor-row);
 
-  /* IMPORTANT: match wrapping with textarea so lines align */
+  /* Match wrapping with textarea so lines align */
   white-space: pre-wrap;
   word-break: break-word;
   tab-size: 2;
 }
 
-/* Each visual line of highlight */
+/* each visual line of highlight */
 .rline {
-  white-space: pre-wrap;      /* match textarea/ruler */
+  white-space: pre-wrap;
   word-break: break-word;
 }
 
@@ -145,7 +145,7 @@
 .ln-ghosts{
   position:absolute;
   inset:0;
-  padding: var(--editor-pad-y) var(--editor-pad-x); /* match textarea/ruler */
+  padding: var(--editor-pad-y) var(--editor-pad-x);
   pointer-events:none;
   will-change: transform;
 }

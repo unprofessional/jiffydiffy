@@ -1,3 +1,4 @@
+// src/components/DiffView.tsx
 import { useState, type JSX } from "react";
 import type { DiffResult } from "../types/diff";
 import { wordDiff } from "../utils/word-diff";
@@ -8,6 +9,9 @@ type HoverPayload = {
   a: { from: number; to: number } | null;
   b: { from: number; to: number } | null;
 };
+
+type LineOp = "equal" | "insert" | "delete";
+type Line = { op: LineOp; text: string };
 
 export function DiffView({
   diff,
@@ -26,67 +30,99 @@ export function DiffView({
 
   const rendered = diff.hunks.map((h, hi) => {
     const rows: JSX.Element[] = [];
+
+    // 1-based line numbers from backend
     let aLn = h.a_start;
     let bLn = h.b_start;
 
-    for (let i = 0; i < h.lines.length; i++) {
-      const cur = h.lines[i];
-      const next = h.lines[i + 1];
+    const lines = h.lines as Line[];
 
-      const isDelIns = cur && next && cur.op === "delete" && next.op === "insert";
-      const isInsDel = cur && next && cur.op === "insert" && next.op === "delete";
+    // Helpers to take runs of the same op
+    let i = 0;
+    const takeRun = (want: LineOp): Line[] => {
+      const out: Line[] = [];
+      while (i < lines.length && lines[i].op === want) out.push(lines[i++]);
+      return out;
+    };
 
-      if (isDelIns || isInsDel) {
-        const delText = isDelIns ? cur!.text : next!.text;
-        const insText = isDelIns ? next!.text : cur!.text;
-        const { aTokens, bTokens } = wordDiff(delText, insText);
+    while (i < lines.length) {
+      const op = lines[i].op;
 
-        rows.push(
-          <div key={`h${hi}-p${i}`} className="row replace">
-            <span className="gA">{aLn}</span>
-            <span className="cell cellA delete">
-              <Tokens tokens={aTokens.map(t => ({ t: t.t, del: t.del }))} />
-            </span>
-            <span className="gB">{bLn}</span>
-            <span className="cell cellB insert">
-              <Tokens tokens={bTokens.map(t => ({ t: t.t, ins: t.ins }))} />
-            </span>
-          </div>
-        );
-        aLn++; bLn++; i++; // consumed the pair
+      // Equal: 1:1 pairing across the whole run.
+      if (op === "equal") {
+        const eq = takeRun("equal");
+        for (let k = 0; k < eq.length; k++) {
+          const l = eq[k];
+          rows.push(
+            <div key={`h${hi}-e${i}-${k}`} className="row equal">
+              <span className="gA">{aLn}</span>
+              <span className="cell cellA">{l.text || " "}</span>
+              <span className="gB">{bLn}</span>
+              <span className="cell cellB">{l.text || " "}</span>
+            </div>
+          );
+          aLn++; bLn++;
+        }
         continue;
       }
 
-      if (cur.op === "equal") {
-        rows.push(
-          <div key={`h${hi}-e${i}`} className="row equal">
-            <span className="gA">{aLn}</span>
-            <span className="cell cellA">{cur.text || " "}</span>
-            <span className="gB">{bLn}</span>
-            <span className="cell cellB">{cur.text || " "}</span>
-          </div>
-        );
-        aLn++; bLn++;
-      } else if (cur.op === "delete") {
-        rows.push(
-          <div key={`h${hi}-d${i}`} className="row delete">
-            <span className="gA">{aLn}</span>
-            <span className="cell cellA delete">{cur.text || " "}</span>
-            <span className="gB"></span>
-            <span className="cell cellB"></span>
-          </div>
-        );
-        aLn++;
-      } else {
-        rows.push(
-          <div key={`h${hi}-i${i}`} className="row insert">
-            <span className="gA"></span>
-            <span className="cell cellA"></span>
-            <span className="gB">{bLn}</span>
-            <span className="cell cellB insert">{cur.text || " "}</span>
-          </div>
-        );
-        bLn++;
+      // Change block: collect *runs* of deletes and inserts (either order),
+      // then zip them row-by-row so DOM rows align like GitHub.
+      let delRun: Line[] = [];
+      let insRun: Line[] = [];
+
+      if (op === "delete") {
+        delRun = takeRun("delete");
+        if (i < lines.length && lines[i].op === "insert") insRun = takeRun("insert");
+      } else if (op === "insert") {
+        insRun = takeRun("insert");
+        if (i < lines.length && lines[i].op === "delete") delRun = takeRun("delete");
+      }
+
+      const n = Math.max(delRun.length, insRun.length);
+      for (let k = 0; k < n; k++) {
+        const delLine = delRun[k];
+        const insLine = insRun[k];
+
+        if (delLine && insLine) {
+          // Replace row: show word-level diff
+          const { aTokens, bTokens } = wordDiff(delLine.text, insLine.text);
+          rows.push(
+            <div key={`h${hi}-r${i}-${k}`} className="row replace">
+              <span className="gA">{aLn}</span>
+              <span className="cell cellA delete">
+                <Tokens tokens={aTokens.map(t => ({ t: t.t, del: t.del }))} />
+              </span>
+              <span className="gB">{bLn}</span>
+              <span className="cell cellB insert">
+                <Tokens tokens={bTokens.map(t => ({ t: t.t, ins: t.ins }))} />
+              </span>
+            </div>
+          );
+          aLn++; bLn++;
+        } else if (delLine) {
+          // Pure deletion with blank right
+          rows.push(
+            <div key={`h${hi}-d${i}-${k}`} className="row delete">
+              <span className="gA">{aLn}</span>
+              <span className="cell cellA delete">{delLine.text || " "}</span>
+              <span className="gB"></span>
+              <span className="cell cellB"></span>
+            </div>
+          );
+          aLn++;
+        } else if (insLine) {
+          // Pure insertion with blank left
+          rows.push(
+            <div key={`h${hi}-i${i}-${k}`} className="row insert">
+              <span className="gA"></span>
+              <span className="cell cellA"></span>
+              <span className="gB">{bLn}</span>
+              <span className="cell cellB insert">{insLine.text || " "}</span>
+            </div>
+          );
+          bLn++;
+        }
       }
     }
 
@@ -153,6 +189,5 @@ export function DiffView({
     );
   });
 
-  // NEW: wrap in diff-pane + mono so code scale applies everywhere inside
   return <div className="diff-pane mono">{rendered}</div>;
 }
