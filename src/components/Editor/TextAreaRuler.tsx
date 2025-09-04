@@ -1,18 +1,16 @@
+// src/components/Editor/TextAreaRuler.tsx
 import type { RefObject, MutableRefObject } from "react";
+import { useHighlight } from "../../features/syntax/hooks/use-highlight";
 
 type GhostRange = { from: number; to: number };
 type RefLike<T extends HTMLElement> = RefObject<T | null> | MutableRefObject<T | null>;
 
 export function TextAreaRuler({
-  taRef,
-  rulerRef,
-  ghostRef,
-  value,
-  onChange,
-  logicalLines,
-  ghostRanges,
-  offsets,
-  clampLine,
+  taRef, rulerRef, ghostRef,
+  value, onChange, logicalLines, ghostRanges, offsets, clampLine,
+  // NEW:
+  highlight = true,
+  language = "auto",
 }: {
   taRef: RefLike<HTMLTextAreaElement>;
   rulerRef: RefLike<HTMLDivElement>;
@@ -23,7 +21,13 @@ export function TextAreaRuler({
   ghostRanges: GhostRange[];
   offsets: number[];
   clampLine: (i: number) => number;
+  highlight?: boolean;
+  /** "auto" or any registered language id, e.g. "typescript" */
+  language?: "auto" | string;
 }) {
+  // Compute highlighted HTML (one pass across the entire buffer)
+  const { linesHtml, language: detected } = useHighlight(value, language);
+
   return (
     <div className="ln-wrap">
       <div className="ln-ghosts" ref={ghostRef as any} aria-hidden="true">
@@ -44,11 +48,16 @@ export function TextAreaRuler({
         wrap="soft"
       />
 
-      <div className="ln-ruler" ref={rulerRef as any} aria-hidden="true">
+      <div className="ln-ruler" ref={rulerRef as any} aria-hidden="true" data-lang={detected}>
         {logicalLines.map((line, i) => (
-          <div key={i} className="rline">
-            {line.length ? line : "\u00A0"}
-          </div>
+          <div
+            key={i}
+            className="rline hljs"              // hljs theme selectors
+            // If highlighting, inject precomputed HTML; otherwise show plain text
+            {...(highlight
+              ? { dangerouslySetInnerHTML: { __html: linesHtml[i] ?? "&nbsp;" } }
+              : { children: line.length ? line : "\u00A0" })}
+          />
         ))}
       </div>
     </div>

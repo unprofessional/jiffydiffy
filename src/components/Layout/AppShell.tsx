@@ -3,6 +3,7 @@ import React from "react";
 import { Sidebar } from "../Sidebar/Sidebar";
 import { FontScaleProvider, useFontScale } from "../../state/font-scale";
 import "../../styles/app-shell.css";
+import "highlight.js/styles/github-dark-dimmed.css";
 
 export const AppShell: React.FC<{
   onOpenDiff?: (id: string) => void;

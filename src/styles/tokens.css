@@ -4,13 +4,13 @@
   --ui-font: Inter, Avenir, Helvetica, Arial, system-ui, -apple-system, "Segoe UI", sans-serif;
   --ui-font-size: 16px;
 
-  /* Monospace used by editors + diff */
+  /* Monospace used by editors + diff (DEFER to FontScaleProvider) */
   --mono-font: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
-  --mono-size: 13.5px;
-  --mono-line: 1.5; /* unitless multiplier */
+  --mono-size: var(--code-font, 13px);
+  --mono-line: var(--code-line-height, 1.55);
 
   /* Editor sizing: exactly N lines visible */
-  --editor-lines: 15;
+  --editor-lines: 20;
   --editor-row: calc(var(--mono-size) * var(--mono-line)); /* px per line */
   /* Padding used by textarea/ruler (must match in editor.css) */
   --editor-pad-x: 8px;
@@ -93,4 +93,21 @@
     --hunk-header-bg:#151515;
     --hunk-body-bg:#111111;
   }
+}
+
+/* Ensure token spans inherit exact mono metrics everywhere (diff + editors) */
+.tokens,
+.token-del,
+.token-ins {
+  font: inherit;
+  line-height: inherit;
+  white-space: inherit;
+  word-break: inherit;
+  tab-size: inherit;
+}
+
+.token-del,
+.token-ins {
+  padding: 0 1px;
+  border-radius: 2px;
 }

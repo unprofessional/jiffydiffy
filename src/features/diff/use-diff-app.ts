@@ -1,3 +1,4 @@
+// src/features/diff/use-diff-app.ts
 import { useMemo, useRef, useState } from "react";
 import type { DiffResult } from "../../types/diff";
 import { invokeDiff } from "../../services/diff.service";

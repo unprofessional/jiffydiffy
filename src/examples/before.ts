@@ -1,11 +1,5 @@
-// text-utils.ts (AFTER) — polished, typed, and tested helpers
-// Changes:
-// - Named exports only (no default)
-// - Safer unicode handling (truncate w/ grapheme awareness)
-// - Pluralization with basic irregulars + custom formatter
-// - Debounce with leading/trailing, cancel/flush, and proper types
-// - Internal helpers + constants
-// - Docs & JSDoc improve editor tooltips
+// text-utils.ts
+// (BEFORE)
 
 // ---------- Constants ----------
 const DEFAULT_MAX = 120;
@@ -178,10 +172,3 @@ function assertString(value: unknown, name: string): asserts value is string {
 function isLowSurrogate(code: number): boolean {
   return code >= 0xdc00 && code <= 0xdfff;
 }
-
-// ---------- Tiny inline tests (runnable in dev) ----------
-// if (process.env.NODE_ENV !== "production") {
-//   console.assert(slugify("Hello, 世界!") === "hello-世界", "slugify unicode failed");
-//   console.assert(truncate("abcdef", { max: 3 }) === "…", "truncate tiny max");
-//   console.assert(formatCount(2, "person") === "2 people", "irregular plural");
-// }
