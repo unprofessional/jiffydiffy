@@ -1,14 +1,17 @@
+// src/components/Controls.tsx
 import { PlayIcon, RefreshIcon } from "./Icons";
 
 type Props = {
   loading: boolean;
-  canRunDiff: boolean;
+  canRunDiff: boolean; // already combined with lock in App
   error: string | null;
   onReset: () => void;
   onRun: () => void;
 };
 
 export function Controls({ loading, canRunDiff, error, onReset, onRun }: Props) {
+  const disabled = loading || !canRunDiff;
+
   return (
     <div className="controls-row-wrap">
       <div className="controls">
@@ -22,7 +25,8 @@ export function Controls({ loading, canRunDiff, error, onReset, onRun }: Props) 
             type="button"
             className="btn btn-primary"
             onClick={onRun}
-            disabled={loading || !canRunDiff}
+            disabled={disabled}
+            title={disabled && !loading ? "No changes since last run" : "Run Diff"}
           >
             <PlayIcon />
             <span>{loading ? "Diffing…" : "Run Diff"}</span>

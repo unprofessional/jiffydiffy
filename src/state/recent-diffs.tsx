@@ -1,3 +1,4 @@
+// src/state/recent-diffs.tsx
 import React, {
   createContext,
   useCallback,
@@ -7,11 +8,12 @@ import React, {
   useState,
 } from "react";
 
-// ✅ Use your canonical types (no local re-declare)
 import type { DiffResult } from "../types/diff";
+import { makeDiffHash } from "../utils/diff-hash";
 
 export type RecentDiffMeta = {
-  id: string;                // uuid-ish
+  id: string;                // uuid-ish (kept for UI keys)
+  hash: string;              // NEW: deterministic fingerprint of rendered diff
   createdAt: number;         // Date.now()
   aLabel: string;            // e.g., "Original"
   bLabel: string;            // e.g., "New"
@@ -31,7 +33,7 @@ type Ctx = {
   items: RecentDiffEntry[];
   add: (
     entry: Omit<RecentDiffEntry, "meta"> & {
-      meta?: Partial<RecentDiffMeta>;
+      meta?: Partial<Omit<RecentDiffMeta, "hash" | "id" | "createdAt" | "hunksCount">>;
       aText?: string;
       bText?: string;
     }
@@ -40,7 +42,7 @@ type Ctx = {
 };
 
 const MAX = 5;
-const STORAGE_KEY = "diffapp:recent-diffs:v1";
+const STORAGE_KEY = "diffapp:recent-diffs:v2"; // bumped for hash field
 
 const RecentDiffsContext = createContext<Ctx | null>(null);
 
@@ -71,26 +73,47 @@ export const RecentDiffsProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, [items]);
 
-  const add = useCallback<Ctx["add"]>((entry) => {
+  const add = useCallback<Ctx["add"]>(async (entry) => {
     const { result, meta: partialMeta, aText, bText } = entry;
 
-    const findPreview = (txt?: string) => {
-      if (txt && txt.trim()) return txt.split(/\r?\n/)[0]?.slice(0, 80);
-      const line = result.hunks.flatMap((h) => h.lines).find((l) => l.text.trim());
-      return line?.text?.slice(0, 80);
-    };
+    // compute fingerprint of the *rendered* diff
+    let hash = "";
+    try {
+      hash = await makeDiffHash(result);
+    } catch {
+      // fall back to a lossy stringify if hashing unavailable
+      hash = JSON.stringify({ h: result?.hunks ?? [] }).slice(0, 256);
+    }
 
-    const meta: RecentDiffMeta = {
-      id: (crypto as any).randomUUID?.() || Math.random().toString(36).slice(2),
-      createdAt: Date.now(),
-      hunksCount: result.hunks.length,
-      aLabel: partialMeta?.aLabel ?? "Original",
-      bLabel: partialMeta?.bLabel ?? "New",
-      aPreview: partialMeta?.aPreview ?? findPreview(aText),
-      bPreview: partialMeta?.bPreview ?? findPreview(bText),
-    };
+    setItems((prev) => {
+      // de-dupe by hash
+      if (prev.some((it) => it.meta.hash === hash)) return prev;
 
-    setItems((prev) => [{ meta, result, aText, bText }, ...prev].slice(0, MAX));
+      const findPreview = (txt?: string) => {
+        if (txt && txt.trim()) return txt.split(/\r?\n/)[0]?.slice(0, 80);
+        // try to derive a preview from diff lines (supports either .text or .s)
+        // @ts-ignore
+        const line = (result?.hunks ?? []).flatMap((h: any) => h.lines ?? [])
+          // @ts-ignore
+          .find((l: any) => (l.text ?? l.s ?? "").toString().trim());
+        // @ts-ignore
+        const val = (line?.text ?? line?.s ?? "") as string;
+        return val ? val.slice(0, 80) : undefined;
+      };
+
+      const meta: RecentDiffMeta = {
+        id: (crypto as any).randomUUID?.() || Math.random().toString(36).slice(2),
+        hash,
+        createdAt: Date.now(),
+        hunksCount: (result?.hunks ?? []).length,
+        aLabel: partialMeta?.aLabel ?? "Original",
+        bLabel: partialMeta?.bLabel ?? "New",
+        aPreview: partialMeta?.aPreview ?? findPreview(aText),
+        bPreview: partialMeta?.bPreview ?? findPreview(bText),
+      };
+
+      return [{ meta, result, aText, bText }, ...prev].slice(0, MAX);
+    });
   }, []);
 
   const clear = useCallback(() => setItems([]), []);

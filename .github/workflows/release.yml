@@ -1,0 +1,80 @@
+name: build-tauri
+on:
+  workflow_dispatch:
+  # push:
+  #   tags: ["v*"]   # <- uncomment if you want tagged releases to build
+
+concurrency:
+  group: build-tauri-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          # Match your local (you’re on pnpm 10.x)
+          version: 10
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+
+      - name: Install Rust (stable)
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Windows bundler deps
+        if: runner.os == 'Windows'
+        run: |
+          choco install -y nsis
+          # If you also want MSI:
+          # choco install -y wixtoolset
+
+      # If you committed pnpm-lock.yaml and pnpm-builds.json (recommended)
+      - name: Install JS deps
+        run: pnpm install --frozen-lockfile
+
+      # ---------- macOS builds ----------
+      - name: Build macOS DMG (Apple Silicon)
+        if: runner.os == 'macOS'
+        run: pnpm tauri build --bundles dmg
+
+      - name: Add Intel target (macOS)
+        if: runner.os == 'macOS'
+        run: rustup target add x86_64-apple-darwin
+
+      - name: Build macOS DMG (Intel x86_64)
+        if: runner.os == 'macOS'
+        env:
+          # Helpful hints for cross-compile; harmless if already set
+          SDKROOT: ${{ env.SDKROOT }}
+          MACOSX_DEPLOYMENT_TARGET: "12.0"
+        run: pnpm tauri build --bundles dmg --target x86_64-apple-darwin
+
+      # ---------- Windows build ----------
+      - name: Build Windows NSIS
+        if: runner.os == 'Windows'
+        run: pnpm tauri build --bundles nsis
+
+      # ---------- Artifacts ----------
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ runner.os }}-artifacts
+          path: |
+            src-tauri/target/**/bundle/**
+          if-no-files-found: error
